@@ -1,0 +1,21 @@
+---
+title: "p8105_hw2_yl5505"
+author: "Yan Li"
+date: "2024-10-01"
+output: github_document
+---
+
+# Problem 0
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+# Problem 1
+```{r}
+
+```
+
+
+
+
