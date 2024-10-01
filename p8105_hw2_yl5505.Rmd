@@ -33,7 +33,16 @@ nyc_sub |>
 ```
 -- 465 rows
 
+## How many stations are ADA compliant?
+```{r}
+nyc_sub |> 
+  filter(ada == TRUE) |> 
+  select(station_name, line) |> 
+  distinct()
+```
+-- 84 rows
 
+## 
 
 
 
