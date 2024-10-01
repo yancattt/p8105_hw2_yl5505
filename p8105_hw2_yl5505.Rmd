@@ -87,7 +87,7 @@ nyc_sub |>
 
 
 # Problem 2
--- import dataset
+-- import and clean datasets
 ```{r}
 mr_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx", 
                        sheet = "Mr. Trash Wheel", 
@@ -102,8 +102,29 @@ mr_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx",
 mr_wheel
 ```
 
+```{r}
+prof_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx", 
+                       sheet = "Professor Trash Wheel", 
+                       skip = 1, 
+                       na = c("NA", ".", "")) |> 
+  janitor::clean_names() |> 
+  select(dumpster:homes_powered)|>
+  filter(!is.na(dumpster)) 
 
+prof_wheel
+```
 
+```{r}
+gwynnda_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx", 
+                       sheet = "Gwynnda Trash Wheel", 
+                       skip = 1, 
+                       na = c("NA", ".", "")) |> 
+  janitor::clean_names() |> 
+  select(dumpster:homes_powered)|>
+  filter(!is.na(dumpster)) 
+
+gwynnda_wheel
+```
 
 
 
