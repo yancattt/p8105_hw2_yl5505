@@ -9,6 +9,7 @@ output: github_document
 ```{r}
 library(tidyverse)
 library(readxl)
+library(dplyr)
 ```
 
 # Problem 1
@@ -96,7 +97,8 @@ mr_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx",
   janitor::clean_names() |> 
   select(dumpster:homes_powered)|>
   filter(!is.na(dumpster)) |> 
-  mutate(sports_balls = as.integer(round(sports_balls)))
+  mutate(sports_balls = as.integer(round(sports_balls)),
+         wheel_type = "Mr. Trash Wheel", year = as.character(year))
 
 
 mr_wheel
@@ -109,7 +111,8 @@ prof_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx",
                        na = c("NA", ".", "")) |> 
   janitor::clean_names() |> 
   select(dumpster:homes_powered)|>
-  filter(!is.na(dumpster)) 
+  filter(!is.na(dumpster)) |>
+  mutate(wheel_type = "Professor Trash Wheel", year = as.character(year))
 
 prof_wheel
 ```
@@ -121,9 +124,17 @@ gwynnda_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx",
                        na = c("NA", ".", "")) |> 
   janitor::clean_names() |> 
   select(dumpster:homes_powered)|>
-  filter(!is.na(dumpster)) 
+  filter(!is.na(dumpster)) |>
+  mutate(wheel_type = "Gwynnda Trash Wheel", year = as.character(year))
 
 gwynnda_wheel
+```
+
+-- Combine three datasets
+```{r}
+combined_wheels = bind_rows(mr_wheel, prof_wheel,gwynnda_wheel)
+
+combined_wheels
 ```
 
 
