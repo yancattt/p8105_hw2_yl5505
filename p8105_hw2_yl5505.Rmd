@@ -24,6 +24,10 @@ nyc_sub =
 
 nyc_sub
 ```
+-- the dataset has information of Division, Line, Station Name, Station Latitude, and Station Longitude. 
+-- the dataset is not tidy,becasue each variable should have its own column. I standardized the column names to a consistent format,selected only relevant columns, and I converted entry variable from character to a logical variable.
+-- 1868 rows and 20 columns
+
 
 ## How many distinct stations are there?
 ```{r}
@@ -31,7 +35,7 @@ nyc_sub |>
   select(station_name, line) |> 
   distinct()
 ```
--- 465 rows
+-- 465 distinct stations
 
 ## How many stations are ADA compliant?
 ```{r}
@@ -40,9 +44,48 @@ nyc_sub |>
   select(station_name, line) |> 
   distinct()
 ```
--- 84 rows
+-- 84 are ADA compliant
 
-## 
+## What proportion of station entrances / exits without vending allow entrance?
+
+```{r}
+nyc_sub |> 
+  filter(vending == "NO") |> 
+  pull(entry) |> 
+  mean()
+```
+## How many distinct stations serve the A train? Of the stations that serve the A train, how many are ADA compliant?
+```{r}
+nyc_sub |> 
+  mutate(across(starts_with("route"), as.character)) |> 
+  pivot_longer(
+    cols = starts_with("route"), 
+    names_to = "route_num", 
+    values_to = "route") |> 
+  filter(route == "A") |> 
+  select(station_name, line) |> 
+  distinct() |> 
+  count()
+
+```
+-- 60 distinct stations serve the A train.
+
+```{r}
+nyc_sub |> 
+  mutate(across(starts_with("route"), as.character)) |> 
+  pivot_longer(
+    cols = starts_with("route"), 
+    names_to = "route_num", 
+    values_to = "route") |> 
+  filter(route == "A", ada == TRUE) |> 
+  select(station_name, line) |> 
+  distinct() |> 
+  count() 
+
+```
+-- 17 of the stations are ADA compliant. 
+
+
 
 
 
