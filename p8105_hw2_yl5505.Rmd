@@ -86,6 +86,24 @@ nyc_sub |>
 -- 17 of the stations are ADA compliant. 
 
 
+# Problem 2
+-- import dataset
+```{r}
+mr_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx", 
+                       sheet = "Mr. Trash Wheel", 
+                       skip = 1, 
+                       na = c("NA", ".", "")) |> 
+  janitor::clean_names() |> 
+  select(dumpster:homes_powered)|>
+  filter(!is.na(dumpster)) |> 
+  mutate(sports_balls = as.integer(round(sports_balls)))
+
+
+mr_wheel
+```
+
+
+
 
 
 
