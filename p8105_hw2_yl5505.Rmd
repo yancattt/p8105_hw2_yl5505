@@ -25,6 +25,14 @@ nyc_sub =
 nyc_sub
 ```
 
+## How many distinct stations are there?
+```{r}
+nyc_sub |> 
+  select(station_name, line) |> 
+  distinct()
+```
+-- 465 rows
+
 
 
 
