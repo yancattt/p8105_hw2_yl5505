@@ -170,32 +170,71 @@ cigs_gwynnda
 ```{r}
 bakers = read_csv("data/bakers.csv")|>
   janitor::clean_names() |>  
-  separate(baker_name, into = c("first_name", "last_name"), sep = "") |>
+  separate(baker_name, into = c("first_name", "last_name"), 
+           sep = "\\s", extra = "merge") |>
   mutate(
     series = as.integer(series),  
     baker_age = as.integer(baker_age)
     )
+bakers
+
 
 bakes = read_csv("data/bakes.csv", na = c("NA", ".", ""))|>
   janitor::clean_names() |>  
-  rename(first_name = baker) |> 
+  rename(first_name = baker)|> 
   mutate(
     series = as.integer(series),  
     episode = as.integer(episode)
     )
-
+bakes
 
 results = read_csv("data/results.csv", skip = 2, na = c("NA", ".", ""))|>
   janitor::clean_names() |>
+   rename(first_name = baker)|>
   mutate(
     series = as.integer(series),  
     episode = as.integer(episode),  
     result = as.factor(result) 
   )
+results
+
 ```
 -- I standardized column names and split the baker name into first_name and last_name, I made sure some columns are in correct format, and I adjusted for two initial empty rows in results dataset.
 
 - check for correctness
+```{r}
+anti_join(bakers, bakes, 
+                  by = c("first_name","series"))
 
+anti_join(bakes, results, 
+                  by = c("first_name", "episode", "series"))
+```
+- some bakers listed in the bakers dataset might not have participated in  bakes dataset
+- there are baking episodes for "Jo" that have not been accounted for in the results dataset. The correct name is Joanne in results dataset, they entered Jo in bakers dataset, and "Jo" with quotation mark in the bakes dataset.
+
+```{r}
+mutate(bakes, first_name = ifelse(first_name == "\"Jo\"", "Jo", first_name), 
+         first_name = ifelse(first_name == "Jo", "Joanne", first_name))
+
+mutate(bakers, first_name = ifelse(first_name == "Jo", "Joanne", first_name))
+```
+-- I corrected the name to Joanne in bakes and bakers dataset. 
+
+### Merge 3 datasets
+```{r}
+merged_two = left_join(bakers, bakes, by = c("first_name", "series"))
+
+merged_three = left_join(merged_two, results, 
+                         by = c("first_name", "series", "episode"))|>
+  relocate(series,episode,first_name,last_name, baker_age,hometown,
+           technical,result,signature_bake,show_stopper)|>
+  arrange(series, episode, first_name, last_name)
+  
+merged_three
+```
+### output the merged dataset
+```{r}
+write_csv(merged_three, "data/merged_three.csv")
+```
 
 
