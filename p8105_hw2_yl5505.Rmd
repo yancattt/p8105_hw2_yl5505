@@ -23,7 +23,6 @@ nyc_sub =
     ada) |> 
   mutate(entry = ifelse(entry == "YES", TRUE, FALSE))
 
-nyc_sub
 ```
 -- the dataset has information of Division, Line, Station Name, Station Latitude, and Station Longitude. 
 -- the dataset is not tidy,becasue each variable should have its own column. I standardized the column names to a consistent format,selected only relevant columns, and I converted entry variable from character to a logical variable.
@@ -93,7 +92,7 @@ nyc_sub |>
 
 
 # Problem 2
--- import and clean datasets
+### import and clean datasets
 ```{r}
 mr_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx", 
                        sheet = "Mr. Trash Wheel", 
@@ -105,8 +104,6 @@ mr_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx",
   mutate(sports_balls = as.integer(round(sports_balls)),
          wheel_type = "Mr. Trash Wheel", year = as.character(year))
 
-
-mr_wheel
 ```
 
 ```{r}
@@ -119,7 +116,6 @@ prof_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx",
   filter(!is.na(dumpster)) |>
   mutate(wheel_type = "Professor Trash Wheel", year = as.character(year))
 
-prof_wheel
 ```
 
 ```{r}
@@ -132,14 +128,12 @@ gwynnda_wheel = read_excel("data/202409 Trash Wheel Collection Data.xlsx",
   filter(!is.na(dumpster)) |>
   mutate(wheel_type = "Gwynnda Trash Wheel", year = as.character(year))
 
-gwynnda_wheel
 ```
 
--- Combine three datasets
+### Combine three datasets
 ```{r}
 combined_wheels = bind_rows(mr_wheel, prof_wheel,gwynnda_wheel)
 
-combined_wheels
 ```
 -- The combined dataset has `r nrow(combined_wheels)` observations,and `r ncol(combined_wheels)` variables. Key variables are `r names(combined_wheels)`.
 
@@ -149,7 +143,6 @@ total_weight_prof = combined_wheels |>
   filter(wheel_type == "Professor Trash Wheel") |>
   summarize(total_weight = sum(weight_tons, na.rm = TRUE))
 
-total_weight_prof
 ```
 -- total weight of trash collected by Professor Trash Wheel is 246.74.
 
@@ -160,7 +153,6 @@ cigs_gwynnda = combined_wheels |>
          year == "2022", month == "June") |>
   summarize(total_butts = sum(cigarette_butts, na.rm = TRUE))
 
-cigs_gwynnda
 ```
 -- the total number of cigarette butts collected by Gwynnda in June of 2022 is 18120.
 
@@ -198,7 +190,7 @@ results = read_csv("data/results.csv", skip = 2)|>
 ```
 -- I standardized column names and split the baker name into first_name and last_name, I made sure some columns are in correct format, and I adjusted for two initial empty rows in results dataset.
 
-- check for correctness
+### check for correctness
 ```{r}
 anti_join(bakers, bakes, 
                   by = c("first_name","series"))
