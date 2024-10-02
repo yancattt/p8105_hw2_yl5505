@@ -141,6 +141,27 @@ combined_wheels = bind_rows(mr_wheel, prof_wheel,gwynnda_wheel)
 
 combined_wheels
 ```
+-- The combined dataset has `r nrow(combined_wheels)` observations,and `r ncol(combined_wheels)` variables. Key variables are `r names(combined_wheels)`.
 
+## what was the total weight of trash collected by Professor Trash Wheel?
+```{r}
+total_weight_prof = combined_wheels |>
+  filter(wheel_type == "Professor Trash Wheel") |>
+  summarize(total_weight = sum(weight_tons, na.rm = TRUE))
+
+total_weight_prof
+```
+-- total weight of trash collected by Professor Trash Wheel is 246.74.
+
+## What was the total number of cigarette butts collected by Gwynnda in June of 2022?
+```{r}
+cigs_gwynnda = combined_wheels |>
+  filter(wheel_type == "Gwynnda Trash Wheel", 
+         year == "2022", month == "June") |>
+  summarize(total_butts = sum(cigarette_butts, na.rm = TRUE))
+
+cigs_gwynnda
+```
+-- the total number of cigarette butts collected by Gwynnda in June of 2022 is 18120.
 
 
