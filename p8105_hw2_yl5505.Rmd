@@ -176,19 +176,17 @@ bakers = read_csv("data/bakers.csv")|>
     series = as.integer(series),  
     baker_age = as.integer(baker_age)
     )
-bakers
 
 
-bakes = read_csv("data/bakes.csv", na = c("NA", ".", ""))|>
+bakes = read_csv("data/bakes.csv")|>
   janitor::clean_names() |>  
   rename(first_name = baker)|> 
   mutate(
     series = as.integer(series),  
     episode = as.integer(episode)
     )
-bakes
 
-results = read_csv("data/results.csv", skip = 2, na = c("NA", ".", ""))|>
+results = read_csv("data/results.csv", skip = 2)|>
   janitor::clean_names() |>
    rename(first_name = baker)|>
   mutate(
@@ -196,7 +194,6 @@ results = read_csv("data/results.csv", skip = 2, na = c("NA", ".", ""))|>
     episode = as.integer(episode),  
     result = as.factor(result) 
   )
-results
 
 ```
 -- I standardized column names and split the baker name into first_name and last_name, I made sure some columns are in correct format, and I adjusted for two initial empty rows in results dataset.
@@ -224,17 +221,51 @@ mutate(bakers, first_name = ifelse(first_name == "Jo", "Joanne", first_name))
 ```{r}
 merged_two = left_join(bakers, bakes, by = c("first_name", "series"))
 
-merged_three = left_join(merged_two, results, 
+merged_three = left_join(results, merged_two, 
                          by = c("first_name", "series", "episode"))|>
   relocate(series,episode,first_name,last_name, baker_age,hometown,
            technical,result,signature_bake,show_stopper)|>
   arrange(series, episode, first_name, last_name)
   
-merged_three
 ```
 ### output the merged dataset
 ```{r}
 write_csv(merged_three, "data/merged_three.csv")
 ```
+- The final merged dataset includes a range of variables from basic demographic information to specific competition details, it is structured around key identifiers such as series, episode, first_name, and last_name, and I also relocated important columns to the front. 
+
+### the star baker or winner of each episode in Seasons 5 through 10
+```{r}
+final_info = read_csv("data/merged_three.csv")
+
+```
+
+```{r}
+winner = final_info |>
+  filter(series >= 5 & series <= 10, result %in% c("WINNER", "STAR BAKER")) |>
+  select(series, episode, first_name, result)|>
+  pivot_wider(
+    names_from = episode,
+    values_from = first_name,
+    names_prefix = "Ep_") |>
+    arrange(series)
+write_csv(winner, "data/winner.csv")
+```
+-- Seasons 5 through 9 showed predictable trends, as each winner had been Star Baker at least once. However, Season 10 broke this pattern because David won without ever being Star Baker. 
+
+## Viewers
+```{r}
+viewers = read_csv("data/viewers.csv", na = c("NA", ".", "")) |>
+  janitor::clean_names()
+head(viewers, 10)
+
+average_1 = mean(pull(viewers, series_1), na.rm = TRUE)
+average_5 = mean(pull(viewers, series_5), na.rm = TRUE)
+```
+-- the average viewership in Season 1 is `r average_1`, Season 5 is `r average_5`.
+
+
+
+
 
 
