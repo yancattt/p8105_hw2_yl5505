@@ -50,11 +50,16 @@ nyc_sub |>
 ## What proportion of station entrances / exits without vending allow entrance?
 
 ```{r}
-nyc_sub |> 
-  filter(vending == "NO") |> 
-  pull(entry) |> 
-  mean()
+no_vending = filter(nyc_sub, vending == "NO")
+total_no_vending = nrow(no_vending)
+allow_entrance = sum(pull(no_vending, entry))
+proportion_no_entry = allow_entrance / total_no_vending
+
+proportion_no_entry
 ```
+-- the proportion is 37.7%. 
+
+
 ## How many distinct stations serve the A train? Of the stations that serve the A train, how many are ADA compliant?
 ```{r}
 nyc_sub |> 
